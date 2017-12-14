@@ -2,10 +2,10 @@ module ActiveAdmin
   module AsyncExport
     class AsyncExportMailer < ActionMailer::Base
 
-      def csv_export(admin_email, model_name, params_json)
+      def csv_export(admin_email, class_name, params_json)
         params = JSON.parse(params_json)
 
-        controller = Kernel::const_get("Admin::#{model_name}sController").new
+        controller = class_name.constantize.new
         controller.send('params=', params)
 
         config = controller.send(:active_admin_config)

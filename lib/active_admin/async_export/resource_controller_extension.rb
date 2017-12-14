@@ -13,8 +13,15 @@ module ActiveAdmin
         index_without_email do |format|
           format.email do
             current_user_method = active_admin_config.namespace.application.current_user_method
-            admin_email = send(current_user_method).email
-            ActiveAdmin::AsyncExport::AsyncExportMailer.csv_export(admin_email, collection.first.class.to_s, params.to_json).deliver_later
+            admin_email         = send(current_user_method).email
+            class_name          = self.class.to_s
+
+            ActiveAdmin::AsyncExport::AsyncExportMailer.csv_export(
+              admin_email,
+              class_name,
+              params.to_json
+            ).deliver_later
+
             redirect_back(fallback_location: admin_users_path, notice: "CSV export emailed to #{admin_email}!")
           end
         end
